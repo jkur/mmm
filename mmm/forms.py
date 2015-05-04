@@ -2,7 +2,7 @@
 from flask.ext.wtf import Form
 from wtforms import validators
 from wtforms import StringField, PasswordField, SelectField, BooleanField
-from mmm.validators import validate_active_user, validate_login_user
+from mmm.validators import validate_active_user, validate_login_user, validate_domain_name
 
 
 class Login_Form(Form):
@@ -17,7 +17,7 @@ class Login_Form(Form):
 
 
 class Domain_Form(Form):
-    name = StringField()
+    name = StringField('domainname', [validators.Required(message="domainname missing"), validate_domain_name])
     description = StringField()
 
 

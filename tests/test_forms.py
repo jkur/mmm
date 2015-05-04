@@ -8,6 +8,9 @@ from mmm.models import Admin
 from mmm import db
 
 
+from mmm.validators import validate_domain_name
+
+
 class Test_Forms(MMMTestCase):
 
     def setUp(self):
@@ -33,7 +36,7 @@ class Test_Forms(MMMTestCase):
     def test_login_validation(self):
         lf = Login_Form(username="", password="hallo")
 
-        self.assertRaises(StopValidation, lf.validate)
+        self.assertRaises(ValidationError, lf.validate_on_submit)
         #    lf.validate()
         #e = cm.exception
         #self.assertEqual(str(e), 'Invalid login')
@@ -46,3 +49,13 @@ class Test_Forms(MMMTestCase):
 
         lf = Login_Form(username="admin", password="hallo")
         lf.validate()
+
+    #def test_domain_validation(self):
+    #    df = Domain_Form(description="Hallo ich bin eine falsche Domain")
+    #    self.assertRaises(ValidationError, df.validate)
+
+
+    def test_validator_domain(self):
+        df = Domain_Form(name="www.corsario_o%$rg.nixda", description="Hallo ich bin eine falsche Domain")
+        self.assertRaises(ValidationError, validate_domain_name, df, df.name)
+        

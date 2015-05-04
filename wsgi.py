@@ -5,7 +5,7 @@ from werkzeug.serving import run_simple
 from mmm import db
 from mmm import create_app
 
-application = create_app(settings_override="app.config.Development")
+application = create_app(__name__, '/', settings_override="mmm.config.Development")
 
 if __name__ == "__main__":
     with application.app_context():

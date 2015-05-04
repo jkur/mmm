@@ -5,3 +5,9 @@ class Config(object):
 class Testing(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False
+
+
+class Development(Config):
+    TESTING = True
+    DEBUG = True
+    WTF_CSRF_ENABLED = False
