@@ -8,7 +8,7 @@ from mmm.models import Admin
 from mmm import db
 
 
-from mmm.validators import validate_domain_name, validate_login_user, validate_active_user
+from mmm.validators import validate_domain_name, validate_login_user, validate_active_user, validate_combined_email_address, validate_combined_email_address_doesnt_exist
 
 
 class Test_Validators(MMMTestCase):
@@ -69,4 +69,33 @@ class Test_Validators(MMMTestCase):
         self.assertRaises(ValidationError, validate_domain_name, df, df.name)
 
 
+    def test_validator_email_username(self):
+        # True
+        af = Address_Form(username='jkur', domain='corsario.org')
+        self.assertTrue(validate_combined_email_address)
+
+        # fails: bad username
+        af = Address_Form(username='jkur@fjldfd', domain='corsario.org')
+        with self.assertRaises(ValidationError) as ctx:
+            validate_combined_email_address(af, af.username)
+        e = ctx.exception
+        self.assertEqual(str(e), "Invalid email address format")
+
+        # fails: "+" cannot be used as name, because postfix uses it
+        af = Address_Form(username='jkur+fdfk', domain='corsario.org')
+        with self.assertRaises(ValidationError) as ctx:
+            validate_combined_email_address(af, af.username)
+        e = ctx.exception
+        self.assertEqual(str(e), "Invalid email address format")
+
+        # fails: the domain part is broken
+        af = Address_Form(username='jkur', domain='corsario.org.nixda')
+        with self.assertRaises(ValidationError) as ctx:
+            validate_combined_email_address(af, af.username)
+        e = ctx.exception
+        self.assertEqual(str(e), "Invalid email address format")
+
         
+    def test_validator_email_username(self):
+        af = Address_Form(username='jkur', domain='corsario.org')
+        self.assertTrue(validate_combined_email_address)

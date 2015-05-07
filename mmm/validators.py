@@ -11,7 +11,6 @@ EMAIL_ADDRESS_REGEX = re.compile(r"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$", re
 
 def check_user_password(user, password):
     return user.password == password
-    
 
 
 def validate_login_user(form, field):
