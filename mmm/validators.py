@@ -9,6 +9,11 @@ EMAIL_USERNAME_REGEX = re.compile(r"^[A-Z0-9._%+-]+$", re.IGNORECASE)
 EMAIL_ADDRESS_REGEX = re.compile(r"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$", re.IGNORECASE)
 
 
+def check_user_password(user, password):
+    return user.password == password
+    
+
+
 def validate_login_user(form, field):
     print("field.data", field.data)
     if not Admin.query.filter_by(username=field.data).first():
@@ -28,26 +33,29 @@ def validate_active_user(form, field):
 def validate_domain_doesnt_exist(form, field):
     if Domain.query.filter_by(name=field.data).first():
         raise ValidationError("Domain already exists")
-
+    return True
 
 def validate_domain_name(form, field):
     if not DOMAIN_REGEX.match(field.data):
         raise ValidationError("Invalid domain name format")
-
+    return True
 
 def validate_email_username(form, field):
     if not EMAIL_USERNAME_REGEX.match(field.data):
         raise ValidationError("Invalid username format")
+    return True
 
 
 def validate_combined_email_address(form, field):
     if not EMAIL_ADDRESS_REGEX.match("%s@%s" % (form.data['username'], form.data['domain'])):
         raise ValidationError("Invalid email address format")
+    return True
 
 
 def validate_email_address(form, field):
     if not EMAIL_ADDRESS_REGEX.match(field.data):
         raise ValidationError("Invalid email address format")
+    return True
 
 
 def validate_combined_email_address_doesnt_exist(form, field):
@@ -55,8 +63,10 @@ def validate_combined_email_address_doesnt_exist(form, field):
                                domain=Domain.query.filter_by(name=form.data['domain']).first()
                                ).first():
         raise ValidationError("Account already exists")
+    return True
 
 
 def validate_admin_doesnt_exist(form, field):
     if Admin.query.filter_by(username=field.data).first():
         raise ValidationError("Account already exists")
+    return True
