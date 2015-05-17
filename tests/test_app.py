@@ -3,7 +3,10 @@ from tests import MMMTestCase
 from mmm.forms import Domain_Form, Address_Form, Alias_Form, Login_Form
 from wtforms.validators import ValidationError
 from mmm import db
-from mmm.models import Admin, Domain
+from mmm.models import Admin, Domain, Address
+from flask import url_for
+
+import re
 
 class Test_App(MMMTestCase):
 
@@ -22,8 +25,8 @@ class Test_App(MMMTestCase):
     #    self.assertIsInstance(lf.password, PasswordField)
 
     def test_domain_save(self):
-        result = self.client.post('/domain/new', data=dict(name="www.corsario.org", description="test"))
-        self.assertRedirects(result, '/')
+        result = self.client.post('/domain', data=dict(name="www.corsario.org", description="test"))
+        self.assertRedirects(result, url_for('.domain'))
         d = Domain.query.first()
         self.assertIsNotNone(d)
         self.assertEqual(d.name, "www.corsario.org")
@@ -31,11 +34,25 @@ class Test_App(MMMTestCase):
         
         
     def test_domain_save_fail(self):
-        result = self.client.post('/domain/new', data=dict(name="www.corsario.org.dddd", description="test"))
+        result = self.client.post('/domain', data=dict(name="www.corsario.org.dddd", description="test"))
         self.assert200(result)
         self.assertEqual(self.get_context_variable('domainform').name.errors[0], "Invalid domain name format")
 
-        result = self.client.post('/domain/new', data=dict(name="", description="test"))
+        result = self.client.post('/domain', data=dict(name="", description="test"))
         self.assert200(result)
         self.assertEqual(self.get_context_variable('domainform').name.errors[0], "domainname missing")
 
+    def test_address_save(self):
+        d = Domain(name="corsario.org", description="bluba")
+        d = d.save(db)
+        result = self.client.post('/address',
+                                  data=dict(username="jkur", password="test", domain=d.id),
+                                  follow_redirects=True)
+        self.assertTrue("jkur@corsario.org" in str(result.data))
+        #print(result.data)
+        u = Address.query.first()
+        self.assertIsNotNone(u)
+        self.assertEqual(u.username, "jkur")
+        self.assertEqual(u.password, "test")
+        self.assertEqual(u.domain.name, "corsario.org")
+        

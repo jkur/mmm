@@ -11,7 +11,12 @@
   </dd>
 {% endmacro %}
 
-<form method=post action="/domain/new">
+{% for domain in domains %}
+  <li>{{ domain.name }}: {{ domain.description }} </li>
+{% endfor %}
+
+
+<form method=post action="{{ url_for('views.domain') }}" >
   <dl>
     {{ render_field(domainform.name) }}
     {{ render_field(domainform.description) }}
