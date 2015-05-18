@@ -24,7 +24,7 @@ class MethodRewriteMiddleware(object):
 
 
 
-application = create_app(__name__, '/', settings_override="mmm.config.Development")
+application = create_app(__name__, '/', settings_override="mmm.config.Production")
 
 application.wsgi_app = MethodRewriteMiddleware(application.wsgi_app)
 
