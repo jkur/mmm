@@ -1,3 +1,10 @@
+try:
+    from secrets import mysql_pass
+except:
+    # define secrets here
+    mysql_pass = 'notthepassword'
+
+
 class Config(object):
     SECRET_KEY = 'e9238402842094820394'
     SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mmmtest.db'
@@ -21,6 +28,6 @@ class Development(Config):
     WTF_CSRF_ENABLED = True
 
     # mysql://username:password@server/db
-    SQLALCHEMY_DATABASE_URI = 'mysql://mailadmin:password@localhost/mailserver'
+    SQLALCHEMY_DATABASE_URI = 'mysql://mailadmin:%s@localhost/mailserver' % (mysql_pass)
     # SQLALCHEMY_ECHO
     # SQLALCHEMY_RECORD_QUERIES
