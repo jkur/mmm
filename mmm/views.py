@@ -50,12 +50,17 @@ def delete_addresses(id):
 @mod.route("/address", methods=['GET', 'POST'])
 def addresses():
     form = Address_Form(request.form)
+    print("requst.form", request.form)
     if form.validate_on_submit():
         d = Address()
         form.populate_obj(d)
         d.save(db)
-        # flash("saved")
+        flash("saved")
         return redirect(url_for('.addresses'))
+    else:
+        print("form:\n ", dir(form.domain))
+        
+        print("validation failed")
     addresses = Address.query.all()
     return render_template("address/edit.html",
                            addressform=form,

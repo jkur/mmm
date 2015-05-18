@@ -8,5 +8,4 @@ def domain_query_factory():
 
 class DomainField(QuerySelectField):
     def __init__(self, *args, **kwargs):
-        super(DomainField, self).__init__(query_factory=domain_query_factory, get_label='name', allow_blank=True, **kwargs)
-
+        super(DomainField, self).__init__(query_factory=domain_query_factory, get_label='name', allow_blank=False, **kwargs)

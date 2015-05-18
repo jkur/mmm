@@ -16,17 +16,18 @@
 	{% if address.active %} active {% else %} inactive {% endif %}
 	<form method="POST" action="/address/{{ address.id }}?__METHOD_OVERRIDE__=DELETE">
 	  <input type="hidden" value="{{ address.id }}" />
-	  <input type=submit value="Delete" />
+	  <input type="submit" value="Delete" />
 	</form>
   </li>
 {% endfor %}
 
 
-<form method=post action="/address">
+<form method="POST" action="/address">
   <dl>
     {{ render_field(addressform.username) }}
+    {{ render_field(addressform.password) }}
     {{ render_field(addressform.domain) }}
     {{ render_field(addressform.active) }}
   </dl>
-  <p><input type=submit value=Add>
+  <p><input type="submit" value="Add" />
 </form>

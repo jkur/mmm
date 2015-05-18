@@ -4,9 +4,10 @@ from mmm.forms import Domain_Form, Address_Form, Alias_Form, Login_Form
 from wtforms import StringField, PasswordField
 from wtforms.validators import ValidationError, StopValidation
 from datetime import datetime
-from mmm.models import Admin
+from mmm.models import Admin, Domain
 from mmm import db
 
+from werkzeug import ImmutableMultiDict
 
 from mmm.validators import validate_domain_name, validate_login_user, validate_active_user, validate_combined_email_address, validate_combined_email_address_doesnt_exist
 
@@ -71,25 +72,20 @@ class Test_Validators(MMMTestCase):
 
     def test_validator_email_username(self):
         # True
-        af = Address_Form(username='jkur', domain='corsario.org')
-        self.assertTrue(validate_combined_email_address)
+        d = Domain(name="corsario.org", description="Test")
+        d.save(db)
+        af = Address_Form(username='jkur', domain=d.id)
+        self.assertTrue(validate_combined_email_address(af, af.username))
 
         # fails: bad username
-        af = Address_Form(username='jkur@fjldfd', domain='corsario.org')
+        af = Address_Form(username='jkur@fjldfd', domain=d.id)
         with self.assertRaises(ValidationError) as ctx:
             validate_combined_email_address(af, af.username)
         e = ctx.exception
         self.assertEqual(str(e), "Invalid email address format")
 
         # fails: "+" cannot be used as name, because postfix uses it
-        af = Address_Form(username='jkur+fdfk', domain='corsario.org')
-        with self.assertRaises(ValidationError) as ctx:
-            validate_combined_email_address(af, af.username)
-        e = ctx.exception
-        self.assertEqual(str(e), "Invalid email address format")
-
-        # fails: the domain part is broken
-        af = Address_Form(username='jkur', domain='corsario.org.nixda')
+        af = Address_Form(username='jkur+fdfk', domain=d.id)
         with self.assertRaises(ValidationError) as ctx:
             validate_combined_email_address(af, af.username)
         e = ctx.exception
@@ -97,5 +93,7 @@ class Test_Validators(MMMTestCase):
 
         
     def test_validator_email_username(self):
-        af = Address_Form(username='jkur', domain='corsario.org')
-        self.assertTrue(validate_combined_email_address)
+        d = Domain(name="corsario.org", description="Test")
+        d.save(db)
+        af = Address_Form(ImmutableMultiDict([('domain', str(d.id)), ('username', 'jkur'), ('active', 'y')]))
+        self.assertTrue(validate_combined_email_address(af, af.username))

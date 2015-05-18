@@ -48,7 +48,7 @@ def validate_email_username(form, field):
 def validate_combined_email_address(form, field):
     print("validate domain", form.data['domain'] )
     if not EMAIL_ADDRESS_REGEX.match("%s@%s" % (form.data['username'], form.data['domain'].name)):
-        raise ValidationError("Invalid email address format")
+        raise ValidationError("Invalid email address format: %s@%s" % (form.data['username'], form.data['domain']))
     return True
 
 

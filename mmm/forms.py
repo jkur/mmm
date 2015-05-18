@@ -25,8 +25,9 @@ class Domain_Form(Form):
 
 class Address_Form(Form):
     username = StringField('username', [validators.Required(message="username missing"),
-                                        validate_email_username,
-                                        validate_combined_email_address])
+                                        #validate_email_username,
+                                        #validate_combined_email_address
+                                    ])
     domain = DomainField('domain', [validators.Required(message="select domain")])
     password = PasswordField('password', [validators.Required(message="password missing")])
     active = BooleanField()
