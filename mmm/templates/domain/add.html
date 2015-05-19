@@ -18,6 +18,7 @@
 
 <form method=post action="{{ url_for('views.domain') }}" >
   <dl>
+	{{ domainform.csrf_token }}
     {{ render_field(domainform.name) }}
     {{ render_field(domainform.description) }}
   </dl>

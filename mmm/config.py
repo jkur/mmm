@@ -1,5 +1,5 @@
 try:
-    from secrets import mysql_pass
+    from mmm.secrets import mysql_pass
 except:
     # define secrets here
     mysql_pass = 'notthepassword'
@@ -22,12 +22,12 @@ class Development(Config):
     WTF_CSRF_ENABLED = True
 
 
-class Development(Config):
+class Production(Config):
     TESTING = False
     DEBUG = False
     WTF_CSRF_ENABLED = True
 
     # mysql://username:password@server/db
-    SQLALCHEMY_DATABASE_URI = 'mysql://mailadmin:%s@localhost/mailserver' % (mysql_pass)
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://mailadmin:%s@localhost/postly' % (mysql_pass)
     # SQLALCHEMY_ECHO
     # SQLALCHEMY_RECORD_QUERIES

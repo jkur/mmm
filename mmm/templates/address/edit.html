@@ -24,6 +24,7 @@
 
 <form method="POST" action="/address">
   <dl>
+	{{ addressform.csrf_token }}
     {{ render_field(addressform.username) }}
     {{ render_field(addressform.password) }}
     {{ render_field(addressform.domain) }}
