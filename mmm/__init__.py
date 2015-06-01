@@ -16,4 +16,5 @@ def create_app(package_name, package_path, settings_override=None, **kwargs):
     from .views import mod
     app.register_blueprint(mod)
     db.init_app(app)
+    print(app.url_map)
     return app

@@ -1,6 +1,9 @@
 from . import db
 import datetime
 
+from sqlalchemy_utils.types.password import PasswordType
+
+
 class MMM_Model():
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime())
@@ -34,8 +37,15 @@ class Address(db.Model, MMM_Model):
     username = db.Column(db.Unicode(128), index=True)
     domain_id = db.Column(db.Integer, db.ForeignKey('domain.id'), index=True)
     domain = db.relationship('Domain', single_parent=True, backref=db.backref('addresses', lazy='dynamic'))
-    password = db.Column(db.Unicode(128))
+    password = db.Column(PasswordType(
+        schemes=[
+            'md5_crypt'
+        ],
+
+        #deprecated=['md5_crypt']
+    ))
     active = db.Column(db.Boolean(), default=False)
+
 
 
 class Alias(db.Model, MMM_Model):

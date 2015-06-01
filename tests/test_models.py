@@ -41,9 +41,17 @@ class Test_Models(MMMTestCase):
         addr.save(db)
         addr.created_at = datetime.now()
         addr_saved = addr.save(db)
+        addr.password = "hallo"
+        h = '$1$B.vGnUpI$h9DyhJ0Us0jT/lg0g4jGK.'
         self.assertEqual(addr_saved.id, 1)
         self.assertEqual(addr_saved.username, 'jkur')
         self.assertEqual(addr_saved.domain.name, 'corsario.org')
+        #self.assertEqual(str(addr_saved.password), "hallo")
+        #print(addr_saved.password)
+        #self.assertTrue(addr_saved.password == "hallo")
+        #assert addr_saved.password == b'hallo'
+        #assert addr_saved.password.hash == h
+
 
     def test_alias_model(self):
         mm = Alias(username='jkuralias')
