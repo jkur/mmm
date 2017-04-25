@@ -39,18 +39,19 @@ def aliases():
     return render_template("domain/add.html", domainform=form)
 
 
-@mod.route("/address/<id>", methods=['DELETE'])
-def delete_addresses(id):
-    addr = Address.query.get_or_404(id)
-    db.session.delete(addr)
-    db.session.commit()
-    return redirect(url_for('.addresses'))
+#@mod.route("/address/<id>", methods=['DELETE'])
+#def delete_addresses(id):
+#    addr = Address.query.get_or_404(id)
+#    db.session.delete(addr)
+#    db.session.commit()
+#    return redirect(url_for('.addresses'))
 
 
 @mod.route("/address", methods=['GET', 'POST'])
 def addresses():
     form = Address_Form(request.form)
-    print("requst.form", request.form)
+    print("request.form", request.form)
+    print(form.__dict__)
     if form.validate_on_submit():
         d = Address()
         form.populate_obj(d)
@@ -59,7 +60,6 @@ def addresses():
         return redirect(url_for('.addresses'))
     else:
         print("form:\n ", dir(form.domain))
-        
         print("validation failed")
     addresses = Address.query.all()
     return render_template("address/edit.html",

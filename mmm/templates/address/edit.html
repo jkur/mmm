@@ -22,9 +22,11 @@
 {% endfor %}
 
 
-<form method="POST" action="/address">
-  <dl>
-	{{ addressform.csrf_token }}
+<form name="addressform" method="POST" action="/address">
+  <dl>{{ addressform.csrf_token }}
+{% if addressform.csrf_token.errors %}
+    <div class="warning">You have submitted an invalid CSRF token</div>
+{% endif %}
     {{ render_field(addressform.username) }}
     {{ render_field(addressform.password) }}
     {{ render_field(addressform.domain) }}
