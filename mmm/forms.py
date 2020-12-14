@@ -1,5 +1,5 @@
 
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import validators
 from wtforms import StringField, PasswordField, BooleanField
 from mmm.validators import validate_active_user, validate_login_user, validate_domain_name, validate_email_username, validate_combined_email_address

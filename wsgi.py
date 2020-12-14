@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from werkzeug.serving import run_simple
-from werkzeug import url_decode
+from werkzeug.urls import url_decode
 
 from mmm import db
 from mmm import create_app
