@@ -1,57 +1,56 @@
 from . import db
 import datetime
+from sqlalchemy_utils import Timestamp
+from flask_login import UserMixin
 
-from sqlalchemy_utils.types.password import PasswordType
 
+class User(db.Model, UserMixin, Timestamp):
+    __tablename__ = 'users'
 
-class MMM_Model():
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime())
-    modified_at = db.Column(db.DateTime())
+    username = db.Column(db.Unicode(128), index=True)
+    password = db.Column(db.Unicode(256))
+    #roles = db.relationship('Role', secondary='user_roles')
 
-    def save(self, db):
-        self.modified_at = datetime.datetime.now()
-        db.session.add(self)
-        db.session.commit()
-        return self
+# Define the Role data-model
+#class Role(db.Model):
+#    __tablename__ = 'roles'
+#    id = db.Column(db.Integer(), primary_key=True)
+#    name = db.Column(db.String(50), unique=True)
+
+# Define the UserRoles association table
+#class UserRoles(db.Model):
+#    __tablename__ = 'user_roles'
+#    id = db.Column(db.Integer(), primary_key=True)
+#    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+#    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
 
 
-class Admin(db.Model, MMM_Model):
-    __tablename__ = 'admins'
 
-    username = db.Column(db.Unicode(128), unique=True, index=True)
-    password = db.Column(db.Unicode(128))
-    active = db.Column(db.Boolean())
+class Domain(db.Model, Timestamp):
+    __tablename__ = 'domains'
 
-
-class Domain(db.Model, MMM_Model):
-    __tablename__ = 'domain'
-
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode(250), unique=True, index=True)
     description = db.Column(db.Unicode())
 
 
-class Address(db.Model, MMM_Model):
-    __tablename__ = 'addresses'
+class Account(db.Model, Timestamp):
+    __tablename__ = 'accounts'
 
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode(128), index=True)
-    domain_id = db.Column(db.Integer, db.ForeignKey('domain.id'), index=True)
-    domain = db.relationship('Domain', single_parent=True, backref=db.backref('addresses', lazy='dynamic'))
-    password = db.Column(PasswordType(
-        schemes=[
-            'md5_crypt'
-        ],
-
-        #deprecated=['md5_crypt']
-    ))
+    domain_id = db.Column(db.Integer, db.ForeignKey('domains.id'), index=True)
+    domain = db.relationship('Domain', single_parent=True, backref=db.backref('accounts', lazy='dynamic'))
+    password = db.Column(db.Unicode(256))
     active = db.Column(db.Boolean(), default=False)
 
 
-
-class Alias(db.Model, MMM_Model):
+class Alias(db.Model, Timestamp):
     __tablename__ = 'aliases'
 
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode(128), index=True)
-    domain_id = db.Column(db.Integer, db.ForeignKey('domain.id'), index=True)
+    domain_id = db.Column(db.Integer, db.ForeignKey('domains.id'), index=True)
     domain = db.relationship('Domain', single_parent=True, backref=db.backref('aliases', lazy='dynamic'))
     target = db.Column(db.Unicode(254))

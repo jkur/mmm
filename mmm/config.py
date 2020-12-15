@@ -9,7 +9,23 @@ class Config(object):
     SECRET_KEY = 'e9238402842094820394'
     SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mmmtest.db'
     # SQLALCHEMY_COMMIT_ON_TEARDOWN=True  ## commit on app_context tearDown
-    
+   # Flask-Mail SMTP server settings
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USE_TLS = False
+    MAIL_USERNAME = 'email@example.com'
+    MAIL_PASSWORD = 'password'
+    MAIL_DEFAULT_SENDER = '"MyApp" <noreply@example.com>'
+
+    # Flask-User settings
+    USER_APP_NAME = "Mega Mail Manager"      # Shown in and email templates and page footers
+    USER_ENABLE_EMAIL = True        # Enable email authentication
+    USER_ENABLE_USERNAME = False    # Disable username authentication
+    USER_EMAIL_SENDER_NAME = USER_APP_NAME
+    USER_EMAIL_SENDER_EMAIL = "admin@postly.de"
+
+
 class Testing(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False

@@ -1,20 +1,14 @@
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_session import Session
+from flask_migrate import Migrate
+from flask_mail import Mail
+from flask_wtf.csrf import CSRFProtect
 
 
 db = SQLAlchemy()
-app = None
-
-
-def create_app(package_name, package_path, settings_override=None, **kwargs):
-    global app
-    app = Flask(__name__, **kwargs)
-    app.config.from_object('mmm.config.Config')
-    app.config.from_pyfile('settings.cfg', silent=True)
-    app.config.from_object(settings_override)
-
-    from .views import mod
-    app.register_blueprint(mod)
-    db.init_app(app)
-    print(app.url_map)
-    return app
+session = Session()
+migrate = Migrate()
+mail = Mail()
+csrf = CSRFProtect()
+login_manager = LoginManager()
