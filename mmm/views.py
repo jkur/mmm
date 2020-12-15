@@ -5,7 +5,9 @@ from .forms import Domain_Form, Account_Form
 from .models import Domain, Account, User, Alias
 from mmm import db
 from mmm.login import Login_Form
-from flask_login import login_user, logout_user
+from mmm.services import login_user_from_db
+from flask_login import logout_user
+
 
 mod = Blueprint('views', __name__)
 
@@ -18,21 +20,13 @@ def index():
 def userlogin():
     form = Login_Form(request.form)
     if form.validate_on_submit():
-        user_to_login = User.query.filter(User.username == form.username.data).one_or_none()
-        if user_to_login is not None:
-            # chaeck password
-            if user_to_login.password == form.password.data:
-                print("password correct")
-                login_user(user_to_login)
-                return redirect(url_for('.index'))
-            else:
-                print("password incorrect", user_to_login.password, form.password.data)
-                flash("password incorrect", user_to_login.password)
-                return redirect(url_for('.userlogin'))
+        if login_user_from_db(form.username.data, form.password.data):
+            return redirect(url_for('.index'))
+        flash("Wrong Password")
     return render_template("login.html", loginform=form)
 
 
-@app.route('/logout')
+@mod.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('.index'))

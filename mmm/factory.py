@@ -30,11 +30,13 @@ def create_app(settings_override=None, **kwargs):
             db.session.commit()
             print("Added ADmin User!")
 
+
+    from .views import mod as standardmod
+    app.register_blueprint(standardmod)
+
     register_admin(app, db)
 
 
-    from .views import mod
-    app.register_blueprint(mod)
     if app.debug:
          app.logger.debug(app.url_map)
     return app

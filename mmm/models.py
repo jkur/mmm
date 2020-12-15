@@ -35,7 +35,7 @@ class Domain(db.Model, Timestamp):
     description = db.Column(db.Unicode())
 
 
-class Account(db.Model, Timestamp):
+class Account(db.Model, Timestamp, UserMixin):
     __tablename__ = 'accounts'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -45,6 +45,9 @@ class Account(db.Model, Timestamp):
     password = db.Column(db.Unicode(256))
     active = db.Column(db.Boolean(), default=False)
 
+    @property
+    def full_username(self):
+        return self.username + '@' + db.session.query(Domain).get(self.domain_id).name
 
 class Alias(db.Model, Timestamp):
     __tablename__ = 'aliases'
