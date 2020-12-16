@@ -7,7 +7,7 @@ except:
 
 class Config(object):
     SECRET_KEY = 'e9238402842094820394'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mmmtest.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///qmmmtest.db'
     # SQLALCHEMY_COMMIT_ON_TEARDOWN=True  ## commit on app_context tearDown
    # Flask-Mail SMTP server settings
     MAIL_SERVER = 'smtp.gmail.com'

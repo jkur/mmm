@@ -1,4 +1,3 @@
-File Edit Options Buffers Tools Sh-Script YASnippet Virtual Envs Projectile Help
 source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 export FLASK_APP='autoapp.py'
 export FLASK_DEBUG=1

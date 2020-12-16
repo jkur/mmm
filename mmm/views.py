@@ -1,12 +1,12 @@
 from flask import current_app as app
-from flask import request, flash
+from flask import request, flash, redirect, session
 from flask import Blueprint, render_template, redirect, url_for
 from .forms import Domain_Form, Account_Form
-from .models import Domain, Account, User, Alias
+from .models import Domain, Account, Alias
 from mmm import db
 from mmm.login import Login_Form
 from mmm.services import login_user_from_db
-from flask_login import logout_user
+#from flask_user import logout_user
 
 
 mod = Blueprint('views', __name__)
@@ -15,21 +15,37 @@ mod = Blueprint('views', __name__)
 def index():
     return render_template("index.html")
 
-
-@mod.route("/login", methods=['GET', 'POST'])
-def userlogin():
+@mod.route('/login', methods=['GET', 'POST'])
+def login():
     form = Login_Form(request.form)
-    if form.validate_on_submit():
-        if login_user_from_db(form.username.data, form.password.data):
-            return redirect(url_for('.index'))
-        flash("Wrong Password")
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            if login_user_from_db(form.username.data, form.password.data):
+                return redirect(url_for('.index'))
+            flash("Wrong Password")
+        return redirect(url_for('.index'))
     return render_template("login.html", loginform=form)
-
 
 @mod.route('/logout')
 def logout():
-    logout_user()
+    # remove the username from the session if it's there
+    session.pop('username', None)
     return redirect(url_for('.index'))
+
+#@mod.route("/login", methods=['GET', 'POST'])
+#def userlogin():
+#    form = Login_Form(request.form)
+#    if form.validate_on_submit():
+#        if login_user_from_db(form.username.data, form.password.data):
+#            return redirect(url_for('.index'))
+#        flash("Wrong Password")
+#    return render_template("login.html", loginform=form)
+
+
+#@mod.route('/logout')
+#def logout():
+#    logout_user()
+#    return redirect(url_for('.index'))
 
 
 @mod.route("/domain", methods=['GET', 'POST'])

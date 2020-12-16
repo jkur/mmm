@@ -1,11 +1,9 @@
 from flask import Flask
-from mmm import db, csrf, mail, migrate, login_manager
+from mmm import db, csrf, mail, migrate
 from mmm.adminapp import register_admin
-from flask_login import LoginManager
 import datetime
-from mmm.login import load_user
-from mmm.login import load_user
-from mmm.models import User
+from mmm.models import Account
+from mmm.login import load_user_from_session
 
 def create_app(settings_override=None, **kwargs):
     app = Flask(__name__, **kwargs)
@@ -18,24 +16,15 @@ def create_app(settings_override=None, **kwargs):
     csrf.init_app(app)
     mail.init_app(app)
     migrate.init_app(app, db)
-    login_manager.init_app(app)
-
-    with app.app_context():
-        if not User.query.filter(User.username == 'admin').first():
-            user = User(
-                username = 'admin',
-                password='hallo15'
-            )
-            db.session.add(user)
-            db.session.commit()
-            print("Added ADmin User!")
-
 
     from .views import mod as standardmod
     app.register_blueprint(standardmod)
 
     register_admin(app, db)
 
+    @app.before_request
+    def load_user():
+        load_user_from_session()
 
     if app.debug:
          app.logger.debug(app.url_map)

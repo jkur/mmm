@@ -1,9 +1,9 @@
 # coding: utf-8
-from mmm.models import User, Account
+from mmm.models import Account, Domain
 from passlib.hash import md5_crypt, sha256_crypt, sha512_crypt
 from passlib.context import CryptContext
 from base64 import b64decode, b64encode
-from flask_login import login_user, logout_user
+from flask import g
 
 pwd_context = CryptContext(
     # Replace this list with the hash(es) you wish to support.
@@ -25,19 +25,20 @@ pwd_context = CryptContext(
 
 def login_user_from_db(username, password):
     user = get_user(username)
+    if user is None: return False
     if check_user_password(user, password):
-        login_user(user)
+        #login_user(user)
+        g.user = user
         return True
     return False
 
 
 def get_user(username):
-    user = User.query.filter(User.username == username).one_or_none()
-    if user is None:
-        try:
-            user = Account.query.filter(Account.full_username == username).one_or_none()
-        except:
-            return None
+    try:
+        [account_name, domain] = username.split('@')
+        user = Account.query.join(Domain, Account.domain).filter(Account.username == account_name, Domain.name == domain).one_or_none()
+    except:
+        return None
     return user
 
 
@@ -51,4 +52,7 @@ def check_local_user_password(user, password):
     return user.password == password
 
 def check_encrypted_user_password(user, password):
-    return pwd_context.verify(password, user.password)
+    if user.password.startswith("{"):
+        return pwd_context.verify(password, user.password[14:])
+    else:
+        return pwd_context.verify(password, user.password)

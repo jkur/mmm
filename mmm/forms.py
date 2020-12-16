@@ -1,4 +1,3 @@
-
 from flask_wtf import Form
 from wtforms import validators
 from wtforms import StringField, PasswordField, BooleanField
