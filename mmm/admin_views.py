@@ -8,24 +8,24 @@ from flask import g
 from mmm import db
 from datetime import datetime, timedelta
 #from login import current_user
-
+from flask_simplelogin import is_logged_in
 
 class AuthenticatedBaseView(BaseView):
     def is_accessible(self):
-        return g.user.is_authenticated
+        return is_logged_in('admin')
 
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
-        return redirect(url_for('admin.login_view', next=request.url))
+        return redirect(url_for('.login', next=request.url))
 
 
 class AuthenticatedView(ModelView):
     def is_accessible(self):
-        return g.user.is_authenticated
+        return is_logged_in('admin')
 
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
-        return redirect(url_for('admin.login_view', next=request.url))
+        return redirect(url_for('.login', next=request.url))
 
 
 

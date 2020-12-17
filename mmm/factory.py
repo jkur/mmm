@@ -4,6 +4,8 @@ from mmm.adminapp import register_admin
 import datetime
 from mmm.models import Account
 from mmm.login import load_user_from_session
+from flask_simplelogin import SimpleLogin
+
 
 def create_app(settings_override=None, **kwargs):
     app = Flask(__name__, **kwargs)
@@ -16,15 +18,17 @@ def create_app(settings_override=None, **kwargs):
     csrf.init_app(app)
     mail.init_app(app)
     migrate.init_app(app, db)
+    #SimpleLogin(app, login_checker=only_chuck_norris_can_login)
+    SimpleLogin(app)
 
     from .views import mod as standardmod
     app.register_blueprint(standardmod)
 
     register_admin(app, db)
 
-    @app.before_request
-    def load_user():
-        load_user_from_session()
+    #@app.before_request
+    #def load_user():
+    #    load_user_from_session()
 
     if app.debug:
          app.logger.debug(app.url_map)

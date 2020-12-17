@@ -8,12 +8,6 @@ from flask_wtf import FlaskForm
 from flask import session
 from mmm.models import Account, UserMixin, AnonymousUser
 
-
-class Login_Form(FlaskForm):
-    username = fields.StringField(validators=[DataRequired()])
-    password = fields.PasswordField(validators=[DataRequired()])
-
-
 def load_user_from_db(username):
     if username.contains('@'):
         splitted = username.splt('@')

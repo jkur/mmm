@@ -18,12 +18,8 @@ class Config(object):
     MAIL_PASSWORD = 'password'
     MAIL_DEFAULT_SENDER = '"MyApp" <noreply@example.com>'
 
-    # Flask-User settings
-    USER_APP_NAME = "Mega Mail Manager"      # Shown in and email templates and page footers
-    USER_ENABLE_EMAIL = True        # Enable email authentication
-    USER_ENABLE_USERNAME = False    # Disable username authentication
-    USER_EMAIL_SENDER_NAME = USER_APP_NAME
-    USER_EMAIL_SENDER_EMAIL = "admin@postly.de"
+    SIMPLELOGIN_USERNAME = 'admin'
+    SIMPLELOGIN_PASSWORD = 'hallo15'
 
 
 class Testing(Config):
